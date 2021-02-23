@@ -1,0 +1,19 @@
+{
+    "@MainDarkerBG":  "rgb(30,31,33)",
+    "@MainDarkBG":    "rgb(40,42,45)",
+    "@MainBG":        "rgb(63,65,68)",
+    "@WidgDarkerBG":  "rgb(68,70,73)",
+    "@WidgMidBG":     "rgb(72,74,76)",
+    "@WidgDarkBG":    "rgb(78,80,83)",
+    "@WidgAltBG":     "rgb(82,84,87)",
+    "@WidgAltMidBG":  "rgb(85,87,90)",
+    "@WidgBG":        "rgb(88,90,93)",
+    "@WidgLightBG":   "rgb(98,100,103)",
+    "@WidgLighterBG": "rgb(108,110,113)",
+    "@WidgFG_DS":     "rgb(119,120,123)",
+    "@WidgMidFG":     "rgb(158,160,165)",
+    "@WidgFG_EN":     "rgb(188,190,195)",
+    "@TextFG_EN":     "rgb(205,205,205)",
+    "@BlueAccent":    "rgb(82,177,238)",
+    "@DownArrowPNG":  "IMAGE_DIRDownArrow.png"
+}

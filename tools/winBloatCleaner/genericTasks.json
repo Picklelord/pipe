@@ -1,0 +1,188 @@
+{
+    "Microsoft 3dbuilder":{
+        "type":"Software",
+        "function":"Uninstall",
+        "qType":"QCheckBox",
+        "command":"PowerShell -Command \"Get-appxpackage -allusers *3dbuilder* | Remove-AppxPackage\""
+    },
+    "Microsoft windowsalarms":{
+        "type":"Software",
+        "function":"Uninstall",
+        "qType":"QCheckBox",
+        "command":"PowerShell -Command \"Get-appxpackage -allusers *windowsalarms* | Remove-AppxPackage\""
+    },
+    "Microsoft Appconnector":{
+        "type":"Software",
+        "function":"Uninstall",
+        "qType":"QCheckBox",
+        "command":"PowerShell -Command \"Get-appxpackage -allusers *Appconnector* | Remove-AppxPackage\""
+    },
+    "Microsoft windowscalculator":{
+        "type":"Software",
+        "function":"Uninstall",
+        "qType":"QCheckBox",
+        "command":"PowerShell -Command \"Get-appxpackage -allusers *windowscalculator* | Remove-AppxPackage\""
+    },
+    "Microsoft windowscommunicationsapps":{
+        "type":"Software",
+        "function":"Uninstall",
+        "qType":"QCheckBox",
+        "command":"PowerShell -Command \"Get-appxpackage -allusers *windowscommunicationsapps* | Remove-AppxPackage\""
+    },
+    "Microsoft windowscamera":{
+        "type":"Software",
+        "function":"Uninstall",
+        "qType":"QCheckBox",
+        "command":"PowerShell -Command \"Get-appxpackage -allusers *windowscamera* | Remove-AppxPackage\""
+    },
+    "Microsoft CandyCrushSaga":{
+        "type":"Software",
+        "function":"Uninstall",
+        "qType":"QCheckBox",
+        "command":"PowerShell -Command \"Get-appxpackage -allusers *CandyCrushSaga* | Remove-AppxPackage\""
+    },
+    "Microsoft CandyCrushSodaSaga":{
+        "type":"Software",
+        "function":"Uninstall",
+        "qType":"QCheckBox",
+        "command":"PowerShell -Command \"Get-appxpackage -allusers *CandyCrushSodaSaga* | Remove-AppxPackage\""
+    },
+    "Microsoft officehub":{
+        "type":"Software",
+        "function":"Uninstall",
+        "qType":"QCheckBox",
+        "command":"PowerShell -Command \"Get-appxpackage -allusers *officehub* | Remove-AppxPackage\""
+    },
+    "Microsoft skypeapp":{
+        "type":"Software",
+        "function":"Uninstall",
+        "qType":"QCheckBox",
+        "command":"PowerShell -Command \"Get-appxpackage -allusers *skypeapp* | Remove-AppxPackage\""
+    },
+    "Microsoft getstarted":{
+        "type":"Software",
+        "function":"Uninstall",
+        "qType":"QCheckBox",
+        "command":"PowerShell -Command \"Get-appxpackage -allusers *getstarted* | Remove-AppxPackage\""
+    },
+    "Microsoft zunemusic":{
+        "type":"Software",
+        "function":"Uninstall",
+        "qType":"QCheckBox",
+        "command":"PowerShell -Command \"Get-appxpackage -allusers *zunemusic* | Remove-AppxPackage\""
+    },
+    "Microsoft windowsmaps":{
+        "type":"Software",
+        "function":"Uninstall",
+        "qType":"QCheckBox",
+        "command":"PowerShell -Command \"Get-appxpackage -allusers *windowsmaps* | Remove-AppxPackage\""
+    },
+    "Microsoft Messaging":{
+        "type":"Software",
+        "function":"Uninstall",
+        "qType":"QCheckBox",
+        "command":"PowerShell -Command \"Get-appxpackage -allusers *Messaging* | Remove-AppxPackage\""
+    },
+    "Microsoft solitairecollection":{
+        "type":"Software",
+        "function":"Uninstall",
+        "qType":"QCheckBox",
+        "command":"PowerShell -Command \"Get-appxpackage -allusers *solitairecollection* | Remove-AppxPackage\""
+    },
+    "Microsoft bingfinance":{
+        "type":"Software",
+        "function":"Uninstall",
+        "qType":"QCheckBox",
+        "command":"PowerShell -Command \"Get-appxpackage -allusers *bingfinance* | Remove-AppxPackage\""
+    },
+    "Microsoft zunevideo":{
+        "type":"Software",
+        "function":"Uninstall",
+        "qType":"QCheckBox",
+        "command":"PowerShell -Command \"Get-appxpackage -allusers *zunevideo* | Remove-AppxPackage\""
+    },
+    "Microsoft bingnews":{
+        "type":"Software",
+        "function":"Uninstall",
+        "qType":"QCheckBox",
+        "command":"PowerShell -Command \"Get-appxpackage -allusers *bingnews* | Remove-AppxPackage\""
+    },
+    "Microsoft onenote":{
+        "type":"Software",
+        "function":"Uninstall",
+        "qType":"QCheckBox",
+        "command":"PowerShell -Command \"Get-appxpackage -allusers *onenote* | Remove-AppxPackage\""
+    },
+    "Microsoft CommsPhone":{
+        "type":"Software",
+        "function":"Uninstall",
+        "qType":"QCheckBox",
+        "command":"PowerShell -Command \"Get-appxpackage -allusers *CommsPhone* | Remove-AppxPackage\""
+    },
+    "Microsoft windowsphone":{
+        "type":"Software",
+        "function":"Uninstall",
+        "qType":"QCheckBox",
+        "command":"PowerShell -Command \"Get-appxpackage -allusers *windowsphone* | Remove-AppxPackage\""
+    },
+    "Microsoft photos":{
+        "type":"Software",
+        "function":"Uninstall",
+        "qType":"QCheckBox",
+        "command":"PowerShell -Command \"Get-appxpackage -allusers *photos* | Remove-AppxPackage\""
+    },
+    "Microsoft WindowsScan":{
+        "type":"Software",
+        "function":"Uninstall",
+        "qType":"QCheckBox",
+        "command":"PowerShell -Command \"Get-appxpackage -allusers *WindowsScan* | Remove-AppxPackage\""
+    },
+    "Microsoft bingsports":{
+        "type":"Software",
+        "function":"Uninstall",
+        "qType":"QCheckBox",
+        "command":"PowerShell -Command \"Get-appxpackage -allusers *bingsports* | Remove-AppxPackage\""
+    },
+    "Microsoft windowsstore":{
+        "type":"Software",
+        "function":"Uninstall",
+        "qType":"QCheckBox",
+        "command":"PowerShell -Command \"Get-appxpackage -allusers *windowsstore* | Remove-AppxPackage\""
+    },
+    "Microsoft Office.Sway":{
+        "type":"Software",
+        "function":"Uninstall",
+        "qType":"QCheckBox",
+        "command":"PowerShell -Command \"Get-appxpackage -allusers *Office.Sway* | Remove-AppxPackage\""
+    },
+    "Microsoft Twitter":{
+        "type":"Software",
+        "function":"Uninstall",
+        "qType":"QCheckBox",
+        "command":"PowerShell -Command \"Get-appxpackage -allusers *Twitter* | Remove-AppxPackage\""
+    },
+    "Microsoft soundrecorder":{
+        "type":"Software",
+        "function":"Uninstall",
+        "qType":"QCheckBox",
+        "command":"PowerShell -Command \"Get-appxpackage -allusers *soundrecorder* | Remove-AppxPackage\""
+    },
+    "Microsoft bingweather":{
+        "type":"Software",
+        "function":"Uninstall",
+        "qType":"QCheckBox",
+        "command":"PowerShell -Command \"Get-appxpackage -allusers *bingweather* | Remove-AppxPackage\""
+    },
+    "Microsoft xboxapp":{
+        "type":"Software",
+        "function":"Uninstall",
+        "qType":"QCheckBox",
+        "command":"PowerShell -Command \"Get-appxpackage -allusers *xboxapp* | Remove-AppxPackage\""
+    },
+    "Microsoft XboxOneSmartGlass":{
+        "type":"Software",
+        "function":"Uninstall",
+        "qType":"QCheckBox",
+        "command":"PowerShell -Command \"Get-appxpackage -allusers *XboxOneSmartGlass* | Remove-AppxPackage\""
+    }
+}
