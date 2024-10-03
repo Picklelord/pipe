@@ -1,12 +1,9 @@
-#import traceback
-#import sys
 from functools import partial
 from Qt import QtCore
 from Qt import QtWidgets as QtWid
 
 
 class DynamicTable(QtWid.QScrollArea):
-
     def __init__(self, parent, **kwargs):
         """
         Initialises the widget and adds it to the parent widget
@@ -22,16 +19,17 @@ class DynamicTable(QtWid.QScrollArea):
             width,          (int), width of the widget,
             headers,        ([str,str..]), the name for each column, shown in the header row,
             alternateRows,  (bool), to alternate the rows background colour, set this to True
+            useCustomAlternateRows,  (bool), set this to True if you want to define when the rows alternate
+                                Using this will disable sorting
             setWidgetBG,    (bool), to force the background colour, set this to True, **OVERRIDES** alternateRows
             columnAlignment,([str,str..]), side to align each column: [left, right, top, bottom], defaults to left
             disableHeaderSortText, (bool), if set will remove the "(a-z)" or "(z-a)" from the header text!
             rowBorder,      (bool), if set will add a border around each row, default is True
-        
         """
         QtWid.QScrollArea.__init__(self, parent)
         self.rowIndexs = []
-        self.currentRowIndex=0
-        self.rows={}
+        self.currentRowIndex = 0
+        self.rows = {}
         self.cellWidgets = {}
         self.rowVisibility = {}
         self.parent = parent
@@ -39,6 +37,7 @@ class DynamicTable(QtWid.QScrollArea):
         self.hght = kwargs.get("height", 300)
         self.numColumns = kwargs.get("numColumns", 1)
         self.altRows = kwargs.get("alternateRows", False)
+        self.useCustomAltRows = kwargs.get("useCustomAlternateRows", False)
         self.rowBorder = kwargs.get("rowBorder", True)
         self.setWidgetBG = kwargs.get("setWidgetBG", True)
         self.columnWidths = kwargs.get("columnWidths", [0 for x in range(0, self.numColumns)])
@@ -47,13 +46,13 @@ class DynamicTable(QtWid.QScrollArea):
         self.headers = kwargs.get("headers", None)
         self.disableHeaderSortText = kwargs.get("disableHeaderSortText", None)
         self.QValueFunctionDict = {
-            "QToolButton":".text()",
-            "QPushButton":".text()",
-            "QLabel":".text()",
-            "QLinEdit":".text()",
-            "QSpinBox":".value()",
-            "QSlider":".value()",
-            "QComboBox":".currentText()",
+            "QToolButton": ".text()",
+            "QPushButton": ".text()",
+            "QLabel": ".text()",
+            "QLinEdit": ".text()",
+            "QSpinBox": ".value()",
+            "QSlider": ".value()",
+            "QComboBox": ".currentText()",
         }
         self.mainWidget = QtWid.QWidget()
         self.setWidget(self.mainWidget)
@@ -65,9 +64,9 @@ class DynamicTable(QtWid.QScrollArea):
         self.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.sLayout = QtWid.QVBoxLayout(self.widget())
         self.mLayout = QtWid.QVBoxLayout()
-        self.sLayout.setContentsMargins(2,2,2,2)
+        self.sLayout.setContentsMargins(2, 2, 2, 2)
         self.widget().setObjectName("scrollWidgetBG")
-        self.setGeometry(0,0,self.wdth, self.hght)
+        self.setGeometry(0, 0, self.wdth, self.hght)
         self.setObjectName("scrollWidgetBG")
         self.sortData = {}
         self.sorted = False
@@ -87,17 +86,19 @@ class DynamicTable(QtWid.QScrollArea):
             self.headerRow.setSpacing(0)
             self.headerItems = {}
             self.mLayout.addLayout(self.headerRow, QtCore.Qt.AlignTop)
-            self.headerRow.setContentsMargins(0,0,16,0)
-            self.mLayout.setContentsMargins(0,23,0,0)
+            self.headerRow.setContentsMargins(0, 0, 0, 0)
+            self.mLayout.setContentsMargins(0, 23, 0, 0)
             self.setHorizontalHeaderLabels(self.headers)
         else:
-            self.mLayout.setContentsMargins(0,0,0,0)
+            self.mLayout.setContentsMargins(0, 0, 0, 0)
         self.mLayout.setSpacing(0)
 
         self.sLayout.addLayout(self.mLayout)
         self.sLayout.addStretch(1)
+        self.alternateRowState = False
+        self.currentRowColour = "widgetBG"
 
-    def addRow(self, height=26, rowWidgets=None, data={}):
+    def addRow(self, height=26, rowWidgets=None, data={}, isAlternateRow=False):
         """
         Add row of widgets to the table
 
@@ -110,39 +111,63 @@ class DynamicTable(QtWid.QScrollArea):
         rowId = int(self.currentRowIndex)
         self.rowIndexs.append(self.currentRowIndex)
         self.rows[rowId] = {
-            "data":data,
-            "widget":QtWid.QWidget(self),
-            "layout":QtWid.QHBoxLayout(),
-            "height":height,
+            "data": data,
+            "widget": QtWid.QWidget(self),
+            "layout": QtWid.QHBoxLayout(),
+            "height": height,
         }
         self.mLayout.addWidget(self.rows[rowId]["widget"], QtCore.Qt.AlignTop)
         self.rows[rowId]["widget"].setLayout(self.rows[rowId]["layout"])
-        if self.rowBorder:
-            self.rows[rowId]["widget"].setStyleSheet(
-                "padding-top:4px;"
-                "padding-bottom:4px;"
-                "margin-top:0px;"
-                "margin-bottom:0px;"
-                "border-bottom: 2px solid rgb(82, 84, 87);"
-            )
-        else:
-            self.rows[rowId]["widget"].setStyleSheet(
-                "padding-top:4px;"
-                "padding-bottom:4px;"
-                "margin-top:0px;"
-                "margin-bottom:0px;"
-            )
         self.rowVisibility[rowId] = True
         self.cellWidgets[rowId] = []
         self.currentRowIndex += 1
 
-        self.rows[rowId]["widget"].setMinimumHeight(height) 
-        self.rows[rowId]["widget"].setContentsMargins(0,0,0,0)
+        self.rows[rowId]["widget"].setMinimumHeight(height)
+        self.rows[rowId]["widget"].setContentsMargins(0, 0, 0, 0)
         self.rows[rowId]["layout"].setSpacing(0)
-        self.rows[rowId]["layout"].setContentsMargins(0,0,0,0)
+        self.rows[rowId]["layout"].setContentsMargins(0, 0, 0, 0)
 
         if rowWidgets:
             self.addWidgetToRow(rowId, rowWidgets, height)
+
+        rowBGColour = "widgetBG"
+        if self.altRows:
+            if self.useCustomAltRows and isAlternateRow:
+                if self.alternateRowState:
+                    self.alternateRowState = False
+                    if self.rowBorder:
+                        rowBGColour = "alternateBorderBG"
+                    else:
+                        rowBGColour = "AlternateBG"
+                else:
+                    self.alternateRowState = True
+                    if self.rowBorder:
+                        rowBGColour = "tabBorderBG"
+                    else:
+                        rowBGColour = "tabBG"
+                self.currentRowColour = rowBGColour
+            elif self.useCustomAltRows:
+                rowBGColour = self.currentRowColour
+            else:
+                if self.alternateRowState:
+                    self.alternateRowState = False
+                    if self.rowBorder:
+                        rowBGColour = "alternateBorderBG"
+                    else:
+                        rowBGColour = "AlternateBG"
+                else:
+                    self.alternateRowState = True
+                    if self.rowBorder:
+                        rowBGColour = "tabBorderBG"
+                    else:
+                        rowBGColour = "tabBG"
+        elif self.rowBorder:
+            rowBGColour = "widgetBorderBG"
+
+        self.rows[rowId]["widget"].setObjectName(rowBGColour)
+        for widg in rowWidgets:
+            widg.setObjectName(rowBGColour)
+
         return rowId
 
     def addWidgetToRow(self, rowId, item, minHeight=28):
@@ -152,7 +177,7 @@ class DynamicTable(QtWid.QScrollArea):
         args:
             rowId, (int), required, The ID of the row that you want to widget added to
             item, (QWidget), required, the widget you wish to add to the row
-            
+
         returns: item, (QWidget), the newly added widget you passed in
         """
         if isinstance(item, list):
@@ -162,7 +187,6 @@ class DynamicTable(QtWid.QScrollArea):
             return Items
 
         if self.setWidgetBG:
-            #print("setting widgetBG")
             item.setObjectName("widgetBG")
         colNum = len(self.cellWidgets[rowId])
         alignment = self.AlignmentDict[self.columnAlignment[colNum]]
@@ -173,7 +197,6 @@ class DynamicTable(QtWid.QScrollArea):
             item.setAlignment(alignment)
         except:
             pass
-        colWidth = self.columnWidths[colNum]
         colWidth = self.columnWidths[colNum]
 
         if not colWidth == 0:
@@ -194,16 +217,20 @@ class DynamicTable(QtWid.QScrollArea):
             widget.setVisible(self.rowVisibility[rowId])
 
     def removeRow(self, rowId):
-        for widget in self.cellWidgets[rowId]:
-            self.rows[rowId]["layout"].removeWidget(widget)
-            widget.deleteLater()
-        self.cellWidgets[rowId] = None
-        self.rows[rowId]["layout"].deleteLater()
-        self.mLayout.removeWidget(self.rows[rowId]["widget"])
-        self.rows[rowId]["widget"].deleteLater()
-        del self.rows[rowId]["layout"]
-        del self.rows[rowId]["widget"]
-        self.rowIndexs.remove(rowId)
+        if self.cellWidgets[rowId]:
+            for widget in self.cellWidgets[rowId]:
+                self.rows[rowId]["layout"].removeWidget(widget)
+                widget.deleteLater()
+            self.cellWidgets[rowId] = None
+            self.rows[rowId]["layout"].deleteLater()
+            self.mLayout.removeWidget(self.rows[rowId]["widget"])
+            self.rows[rowId]["widget"].deleteLater()
+        if "layout" in self.rows[rowId]:
+            del self.rows[rowId]["layout"]
+        if "widget" in self.rows[rowId]:
+            del self.rows[rowId]["widget"]
+        if rowId in self.rowIndexs:
+            self.rowIndexs.remove(rowId)
 
     def clearTable(self):
         """
@@ -213,6 +240,7 @@ class DynamicTable(QtWid.QScrollArea):
             self.removeRow(rowId)
         self.rows = {}
         self.rowIndexs = []
+        self.cellWidgets = {}
         self.currentRowIndex = 0
 
     def setHorizontalHeaderLabels(self, headers):
@@ -226,7 +254,6 @@ class DynamicTable(QtWid.QScrollArea):
             widg.deleteLater()
             self.headerRow.removeWidget(widg)
         self.headerItems = {}
-
         for colId, header in enumerate(headers):
             self.headerItems[colId] = QtWid.QPushButton()
             self.headerItems[colId].setText(header)
@@ -239,7 +266,7 @@ class DynamicTable(QtWid.QScrollArea):
                 self.headerItems[colId].setFixedWidth(colWidth)
             self.headerRow.addWidget(self.headerItems[colId])
 
-    def sortColumns(self, colId = None, swap = False, switchColumns = False):
+    def sortColumns(self, colId=None, swap=False, switchColumns=False):
         """
         sorts all the rows by the given column
 
@@ -248,53 +275,41 @@ class DynamicTable(QtWid.QScrollArea):
             swap, (bool), optional, if True will swap the sort direction, defaults to False
             switchColumns, (bool), optional, if True will switch to a different column, defaults to False
         """
-        for cId in self.sortData.keys():
-            if not self.disableHeaderSortText:
-                self.headerItems[cId].setText(
-                    self.headerItems[cId].text().replace(" (z-a)", "").replace(" (a-z)", "")
-                )
+        if not self.useCustomAltRows:
+            for cId in self.sortData.keys():
+                if not self.disableHeaderSortText:
+                    self.headerItems[cId].setText(
+                        self.headerItems[cId].text().replace(" (z-a)", "").replace(" (a-z)", "")
+                    )
+            if isinstance(colId, int) and len(self.rows.keys()) > 1:
+                if switchColumns:
+                    self.sorted = colId
+                if colId not in self.Data.keys():
+                    self.sortData[colId] = {}
+                if "descending" not in self.sortData[colId]:
+                    self.sortData[colId]["descending"] = True
+            elif self.sorted:
+                colId = self.sorted
+            else:
+                return
 
-        if isinstance(colId, int) and len(self.rows.keys())>1:
-            if switchColumns:
-                self.sorted = colId
-            if colId not in self.Data.keys():
-                self.sortData[colId] = {}
-            if "descending" not in self.sortData[colId]:
-                self.sortData[colId]["descending"] = True
-
-        elif self.sorted:
-            colId = self.sorted
-        else:
-            return
-
-        ReOrderList = []
-        for qType, rowId in [[type(self.cellWidgets[rowId][colId]), rowId] for rowId in self.rows.keys()]:
-            qType = str(qType).rsplit(".", 1)[1][:-2]
-            value = eval("self.cellWidgets[{}][{}]{}".format(
-                rowId,
-                colId,
-                self.QValueFunctionDict[qType])
-            )
-            ReOrderList.append([value, rowId])
-
-        cleanedTitle = self.headerItems[colId].text().replace(" (z-a)", "").replace(" (a-z)", "")
-        if self.sortData[colId]["descending"]:
-            self.headeerItems[colId].setText(cleanedTitle+" (a-z)")
-        else:
-            self.headeerItems[colId].setText(cleanedTitle+" (z-a)")
-
-        if swap:
-            self.sortData[colId]["descending"] = (not self.sortData[colId]["descending"])
-
-        self.sortData[colId]["newOrder"] = [
-            rId[1]
-            for rId in sorted(ReOrderList, reverse = self.sortData[colId]["descending"])]
-        [
-            self.mLayout.removeWidget(self.rows[rowId]["widget"])
-            for rowId in self.rows.keys()]
-        [
-            self.mLayout.addWidget(self.rows[rowId]["widget"])
-            for rowId in self.sortData[colId]["newOrder"]]
+            ReOrderList = []
+            for qType, rowId in [[type(self.cellWidgets[rowId][colId]), rowId] for rowId in self.rows.keys()]:
+                qType = str(qType).rsplit(".", 1)[1][:-2]
+                value = eval("self.cellWidgets[{}][{}]{}".format(rowId, colId, self.QValueFunctionDict[qType]))
+                ReOrderList.append([value, rowId])
+            cleanedTitle = self.headerItems[colId].text().replace(" (z-a)", "").replace(" (a-z)", "")
+            if self.sortData[colId]["descending"]:
+                self.headeerItems[colId].setText(cleanedTitle + " (a-z)")
+            else:
+                self.headeerItems[colId].setText(cleanedTitle + " (z-a)")
+            if swap:
+                self.sortData[colId]["descending"] = not self.sortData[colId]["descending"]
+            self.sortData[colId]["newOrder"] = [
+                rId[1] for rId in sorted(ReOrderList, reverse=self.sortData[colId]["descending"])
+            ]
+            [self.mLayout.removeWidget(self.rows[rowId]["widget"]) for rowId in self.rows.keys()]
+            [self.mLayout.addWidget(self.rows[rowId]["widget"]) for rowId in self.sortData[colId]["newOrder"]]
 
     def setColumnVisibility(self, columnsVisList):
         """
@@ -308,6 +323,11 @@ class DynamicTable(QtWid.QScrollArea):
             for rowId in self.rows.keys():
                 self.cellWidgets[rowId][col].setVisible(visibility)
             self.headerItems[col].setVisible(visibility)
+
+    def setOneColumnVisibility(self, state, columnNumber):
+        for rowId in self.rows.keys():
+            self.cellWidgets[rowId][columnNumber].setVisible(state)
+        self.headerItems[columnNumber].setVisible(state)
 
     def resizeEvent(self, event):
         """
@@ -331,40 +351,3 @@ class DynamicTable(QtWid.QScrollArea):
         returns: (QWidget)
         """
         return self.cellWidgets[rowId][colId]
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
